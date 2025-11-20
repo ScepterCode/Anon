@@ -10,15 +10,15 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env file explicitly
+# Load .env file only in development (when .env exists)
 env_path = BASE_DIR / '.env'
-load_dotenv(dotenv_path=env_path, override=True)
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path, override=True)
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
 
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'anon-oma8.onrender.com']
 
 INSTALLED_APPS = [
@@ -64,24 +64,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-
     DATABASES = {
-         'default': dj_database_url.config(
+        'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            conn_health_checks=True,  # Supabase requires SSL
+            conn_health_checks=True,
         )
     }
 else:
-
     DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -102,9 +100,9 @@ STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Supabase Configuration
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET', 'report_uploads')
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+SUPABASE_BUCKET = os.environ.get('SUPABASE_BUCKET', 'report_uploads')
 
 # Session configuration
 SESSION_COOKIE_AGE = 86400 * 7  # 7 days
