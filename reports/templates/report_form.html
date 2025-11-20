@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Report - Anonymous Reporting System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .form-title {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .form-control, .form-select {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+        .form-text {
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">📝 Submit a Report</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 10px;">
+            Your report helps us improve. No account needed.
+        </p>
+        <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin-bottom: 25px; border-radius: 5px;">
+            <p style="margin: 0; color: #2e7d32; font-size: 14px; line-height: 1.6;">
+                <strong>🔒 Your Privacy Matters:</strong> This system is completely anonymous. 
+                The name field is optional and only for follow-up if you choose. 
+                Feel free to leave it blank if you prefer to remain anonymous.
+            </p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">
+                    {{ form.description.label }}
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.category.id_for_label }}" class="form-label">
+                    {{ form.category.label }}
+                </label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.category.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text">Select a category to help us organize reports</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.location.id_for_label }}" class="form-label">
+                    {{ form.location.label }}
+                </label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.location.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text">City, neighborhood, or address (optional)</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label">
+                    {{ form.username.label }}
+                </label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text">Optional - only if you want to be contacted</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.image.id_for_label }}" class="form-label">
+                    {{ form.image.label }}
+                </label>
+                {{ form.image }}
+                {% if form.image.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.image.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text">JPG, PNG (max 5MB)</small>
+            </div>
+
+            <button type="submit" class="btn-submit">Submit Report</button>
+        </form>
+
+        <hr style="margin-top: 30px; margin-bottom: 20px; border: none; border-top: 1px solid #eee;">
+        <p style="text-align: center; color: #999; font-size: 13px;">
+            Your report is completely anonymous and confidential.
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

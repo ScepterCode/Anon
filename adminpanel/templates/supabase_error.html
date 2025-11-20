@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Required - Anonymous Reporting System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .error-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+        }
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .error-title {
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .error-message {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+        .btn-back {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚙️</div>
+        <div class="error-title">Supabase Configuration Required</div>
+        <div class="error-message">
+            <p>The application cannot connect to Supabase. Please configure your Supabase credentials to use this system.</p>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Create a Supabase account</strong> at <a href="https://supabase.com" target="_blank">supabase.com</a>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Create a new project</strong> and get your credentials
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Update your .env file</strong> with your Supabase credentials:
+                <div class="code-block">
+SUPABASE_URL=https://your-project.supabase.co<br>
+SUPABASE_KEY=your-anon-key-from-supabase<br>
+SUPABASE_BUCKET=report_uploads
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Create the reports table</strong> in your Supabase SQL editor:
+                <div class="code-block">
+CREATE TABLE IF NOT EXISTS public.reports (<br>
+&nbsp;&nbsp;id UUID PRIMARY KEY DEFAULT gen_random_uuid(),<br>
+&nbsp;&nbsp;description TEXT NOT NULL,<br>
+&nbsp;&nbsp;image_url TEXT,<br>
+&nbsp;&nbsp;category TEXT,<br>
+&nbsp;&nbsp;location TEXT,<br>
+&nbsp;&nbsp;status TEXT DEFAULT 'new',<br>
+&nbsp;&nbsp;created_at TIMESTAMP WITH TIME ZONE DEFAULT now()<br>
+);<br>
+<br>
+-- Enable Row Level Security<br>
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;<br>
+<br>
+-- Allow anonymous inserts<br>
+CREATE POLICY "Allow anonymous inserts" ON public.reports<br>
+&nbsp;&nbsp;FOR INSERT TO anon WITH CHECK (true);<br>
+<br>
+-- Allow authenticated reads<br>
+CREATE POLICY "Allow authenticated reads" ON public.reports<br>
+&nbsp;&nbsp;FOR SELECT TO authenticated USING (true);<br>
+<br>
+-- Allow authenticated updates<br>
+CREATE POLICY "Allow authenticated updates" ON public.reports<br>
+&nbsp;&nbsp;FOR UPDATE TO authenticated USING (true);
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>Create a storage bucket</strong> named "report_uploads" and make it public
+            </div>
+            
+            <div class="step">
+                <span class="step-number">6</span>
+                <strong>Restart the server</strong> after updating the .env file
+            </div>
+            
+            <p style="margin-top: 30px; text-align: center;">
+                <a href="{% url 'admin_login' %}" class="btn-back">← Back to Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
