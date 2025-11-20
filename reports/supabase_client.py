@@ -23,7 +23,7 @@ class SupabaseClient:
         if not self.url or not self.key:
             raise ValueError("SUPABASE_URL and SUPABASE_KEY environment variables are required")
         
-        if self.url == 'https://example.supabase.co':
+        if self.url == 'https://dxggngekixmxghldgwpq.supabase.co':
             raise ValueError("Please configure your Supabase credentials in .env file")
         
         self.client: Client = create_client(self.url, self.key)
