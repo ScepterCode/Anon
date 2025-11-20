@@ -67,20 +67,19 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
 
- DATABASES = {
-        'default': dj_database_url.config(
+    DATABASES = {
+         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,  # Supabase requires SSL
+            conn_health_checks=True,  # Supabase requires SSL
         )
     }
 else:
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
