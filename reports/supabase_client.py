@@ -144,3 +144,24 @@ def get_supabase_client():  # noqa: PLW0603
         _supabase_url = current_url
     
     return _supabase_instance
+
+def __init__(self):
+    # Get from Django settings instead of os.getenv for better reliability
+    from django.conf import settings
+    
+    self.url = settings.SUPABASE_URL
+    self.key = settings.SUPABASE_KEY
+    self.bucket = settings.SUPABASE_BUCKET
+    
+    # DEBUG - Remove after fixing
+    logger.info(f"Initializing Supabase client with URL: {self.url}")
+    logger.info(f"Supabase KEY exists: {bool(self.key)}")
+    logger.info(f"Supabase KEY length: {len(self.key) if self.key else 0}")
+    
+    if not self.url or not self.key:
+        raise ValueError("SUPABASE_URL and SUPABASE_KEY environment variables are required")
+    
+    if self.url == 'https://example.supabase.co':
+        raise ValueError("Please configure your Supabase credentials in .env file")
+    
+    self.client: Client = create_client(self.url, self.key)
